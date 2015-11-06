@@ -27,7 +27,8 @@ LOCAL_SRC_FILES := \
     partitionlist.cpp \
     mousecursor.cpp \
     scrolllist.cpp \
-    patternpassword.cpp
+    patternpassword.cpp \
+    textbox.cpp
 
 ifneq ($(TWRP_CUSTOM_KEYBOARD),)
     LOCAL_SRC_FILES += $(TWRP_CUSTOM_KEYBOARD)
@@ -58,9 +59,6 @@ endif
 ifeq ($(TW_OEM_BUILD), true)
     LOCAL_CFLAGS += -DTW_OEM_BUILD
 endif
-ifeq ($(TW_DISABLE_TTF), true)
-    LOCAL_CFLAGS += -DTW_DISABLE_TTF
-endif
 ifneq ($(TW_X_OFFSET),)
     LOCAL_CFLAGS += -DTW_X_OFFSET=$(TW_X_OFFSET)
 endif
@@ -71,7 +69,7 @@ ifeq ($(TW_ROUND_SCREEN), true)
     LOCAL_CFLAGS += -DTW_ROUND_SCREEN
 endif
 
-LOCAL_C_INCLUDES += bionic external/stlport/stlport
+LOCAL_C_INCLUDES += bionic external/stlport/stlport system/core/libpixelflinger/include
 LOCAL_CFLAGS += -DTWRES=\"$(TWRES_PATH)\"
 
 include $(BUILD_STATIC_LIBRARY)
@@ -113,8 +111,7 @@ ifeq ($(TWRP_NEW_THEME),true)
 # for future copying of used include xmls and fonts:
 # UI_XML := $(TWRP_THEME_LOC)/ui.xml
 # TWRP_INCLUDE_XMLS := $(shell xmllint --xpath '/recovery/include/xmlfile/@name' $(UI_XML)|sed -n 's/[^\"]*\"\([^\"]*\)\"[^\"]*/\1\n/gp'|sort|uniq)
-# TWRP_FONTS_TTF := $(shell xmllint --xpath '/recovery/resources/font/@filename' $(UI_XML)|sed -n 's/[^\"]*\"\([^\"]*\)\"[^\"]*/\1\n/gp'|sort|uniq)
-# TWRP_FONTS_DAT := $(shell xmllint --xpath '/recovery/resources/font/@fallback' $(UI_XML)|sed -n 's/[^\"]*\"\([^\"]*\)\"[^\"]*/\1.dat\n/gp'|sort|uniq)
+# TWRP_FONTS_TTF := $(shell xmllint --xpath '/recovery/resources/font/@filename' $(UI_XML)|sed -n 's/[^\"]*\"\([^\"]*\)\"[^\"]*/\1\n/gp'|sort|uniq)niq)
 ifeq ($(wildcard $(TWRP_THEME_LOC)/ui.xml),)
     $(warning ****************************************************************************)
     $(warning * TW_THEME is not valid: '$(TW_THEME)')
@@ -150,12 +147,6 @@ else
     TWRP_THEME_LOC := $(TW_CUSTOM_THEME)
 endif
 
-ifeq ($(TW_DISABLE_TTF), true)
-    TWRP_REMOVE_FONT := rm -f $(TARGET_RECOVERY_ROOT_OUT)$(TWRES_PATH)fonts/*.ttf
-else
-    TWRP_REMOVE_FONT := rm -f $(TARGET_RECOVERY_ROOT_OUT)$(TWRES_PATH)fonts/*.dat
-endif
-
 TWRP_RES_GEN := $(intermediates)/twrp
 ifneq ($(TW_USE_TOOLBOX), true)
     TWRP_SH_TARGET := /sbin/busybox
@@ -167,7 +158,6 @@ $(TWRP_RES_GEN):
 	mkdir -p $(TARGET_RECOVERY_ROOT_OUT)$(TWRES_PATH)
 	cp -fr $(TWRP_RES) $(TARGET_RECOVERY_ROOT_OUT)$(TWRES_PATH)
 	cp -fr $(TWRP_THEME_LOC)/* $(TARGET_RECOVERY_ROOT_OUT)$(TWRES_PATH)
-	$(TWRP_REMOVE_FONT)
 	mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/sbin/
 ifneq ($(TW_USE_TOOLBOX), true)
 	ln -sf $(TWRP_SH_TARGET) $(TARGET_RECOVERY_ROOT_OUT)/sbin/sh

@@ -12,7 +12,7 @@ on early-init
     start ueventd
     start healthd
 
-service set_permissive /sbin/toolbox setenforce 0
+service set_permissive /sbin/permissive.sh
     oneshot
     seclabel u:r:recovery:s0
 

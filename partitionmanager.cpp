@@ -309,7 +309,7 @@ void TWPartitionManager::Output_Partition(TWPartition* Part) {
 	if (!Part->Fstab_File_System.empty())
 		printf("   Fstab_File_System: %s\n", Part->Fstab_File_System.c_str());
 	if (Part->Format_Block_Size != 0)
-		printf("   Format_Block_Size: %i\n", Part->Format_Block_Size);
+		printf("   Format_Block_Size: %lu\n", Part->Format_Block_Size);
 	if (!Part->MTD_Name.empty())
 		printf("   MTD_Name: %s\n", Part->MTD_Name.c_str());
 	string back_meth = Part->Backup_Method_By_Name();
@@ -1095,8 +1095,17 @@ int TWPartitionManager::Factory_Reset(void) {
 
 	for (iter = Partitions.begin(); iter != Partitions.end(); iter++) {
 		if ((*iter)->Wipe_During_Factory_Reset && (*iter)->Is_Present) {
-			if (!(*iter)->Wipe())
-				ret = false;
+#ifdef TW_OEM_BUILD
+			if ((*iter)->Mount_Point == "/data") {
+				if (!(*iter)->Wipe_Encryption())
+					ret = false;
+			} else {
+#endif
+				if (!(*iter)->Wipe())
+					ret = false;
+#ifdef TW_OEM_BUILD
+			}
+#endif
 		} else if ((*iter)->Has_Android_Secure) {
 			if (!(*iter)->Wipe_AndSec())
 				ret = false;
@@ -1427,17 +1436,22 @@ void TWPartitionManager::Update_System_Details(void) {
 int TWPartitionManager::Decrypt_Device(string Password) {
 #ifdef TW_INCLUDE_CRYPTO
 	int ret_val, password_len;
-	char crypto_blkdev[255], cPassword[255];
+	char crypto_state[PROPERTY_VALUE_MAX], crypto_blkdev[PROPERTY_VALUE_MAX], cPassword[255];
 	size_t result;
 	std::vector<TWPartition*>::iterator iter;
-
-	property_set("ro.crypto.state", "encrypted");
 
 	// Mount any partitions that need to be mounted for decrypt
 	for (iter = Partitions.begin(); iter != Partitions.end(); iter++) {
 		if ((*iter)->Mount_To_Decrypt) {
 			(*iter)->Mount(true);
 		}
+	}
+
+	property_get("ro.crypto.state", crypto_state, "error");
+	if (strcmp(crypto_state, "error") == 0) {
+		property_set("ro.crypto.state", "encrypted");
+		// Sleep for a bit so that services can start if needed
+		sleep(1);
 	}
 
 	strcpy(cPassword, Password.c_str());
@@ -1604,6 +1618,7 @@ int TWPartitionManager::usb_storage_enable(void) {
 		}
 	}
 	property_set("sys.storage.ums_enabled", "1");
+	property_set("sys.usb.config", "mass_storage,adb");
 	return true;
 error_handle:
 	if (mtp_was_enabled)
@@ -1628,6 +1643,7 @@ int TWPartitionManager::usb_storage_disable(void) {
 	Update_System_Details();
 	UnMount_Main_Partitions();
 	property_set("sys.storage.ums_enabled", "0");
+	property_set("sys.usb.config", "adb");
 	if (mtp_was_enabled)
 		if (!Enable_MTP())
 			Disable_MTP();

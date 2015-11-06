@@ -38,6 +38,7 @@
 #include <map>
 #include <fstream>
 #include <sstream>
+#include <pthread.h>
 
 #include "variables.h"
 #include "data.hpp"
@@ -76,7 +77,11 @@ int                                     DataManager::mInitialized = 0;
 
 extern bool datamedia;
 
+#ifndef PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
 pthread_mutex_t DataManager::m_valuesLock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
+#else
+pthread_mutex_t DataManager::m_valuesLock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+#endif
 
 // Device ID functions
 void DataManager::sanitize_device_id(char* device_id) {
@@ -346,16 +351,18 @@ int DataManager::LoadValues(const string filename)
 		string Name;
 		string Value;
 		unsigned short length;
-		char array[512];
+		char array[513];
 
 		if (fread(&length, 1, sizeof(unsigned short), in) != sizeof(unsigned short))	goto error;
 		if (length >= 512)																goto error;
 		if (fread(array, 1, length, in) != length)										goto error;
+		array[length+1] = '\0';
 		Name = array;
 
 		if (fread(&length, 1, sizeof(unsigned short), in) != sizeof(unsigned short))	goto error;
 		if (length >= 512)																goto error;
 		if (fread(array, 1, length, in) != length)										goto error;
+		array[length+1] = '\0';
 		Value = array;
 
 		map<string, TStrIntPair>::iterator pos;
@@ -1083,6 +1090,7 @@ int DataManager::GetMagicValue(const string varName, string& value)
 
 void DataManager::Output_Version(void)
 {
+#ifndef TW_OEM_BUILD
 	string Path;
 	char version[255];
 
@@ -1113,6 +1121,7 @@ void DataManager::Output_Version(void)
 	PartitionManager.Output_Storage_Fstab();
 	sync();
 	LOGINFO("Version number saved to '%s'\n", Path.c_str());
+#endif
 }
 
 void DataManager::ReadSettingsFile(void)
