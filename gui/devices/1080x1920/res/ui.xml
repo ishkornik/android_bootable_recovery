@@ -239,6 +239,12 @@
 				<text>Team Win Recovery Project  v%tw_version%</text>
 			</object>
 
+			<object type="text" color="%button_text_color%">
+				<font resource="font" />
+				<placement x="180" y="64" />
+				<text>%tw_product_model%, by %tw_built%</text>
+			</object>
+
 			<object type="text" color="%text_color%">
 				<condition var1="tw_simulate_actions" var2="1" />
 				<font resource="font" />
