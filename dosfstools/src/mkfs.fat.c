@@ -494,6 +494,12 @@ static uint64_t count_blocks(char *filename, int *remainder)
     return (low / BLOCK_SIZE);
 }
 
+// fix for android 4.4 libc
+#ifndef MOUNTED
+#include <paths.h>
+#define MOUNTED _PATH_MOUNTED
+#endif
+
 /* Check to see if the specified device is currently mounted - abort if it is */
 
 static void check_mount(char *device_name)

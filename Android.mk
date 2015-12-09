@@ -332,6 +332,9 @@ endif
 ifeq ($(shell test $(PLATFORM_SDK_VERSION) -gt 22; echo $$?),0)
     LOCAL_CFLAGS += -DTW_USE_NEW_MINADBD
 endif
+ifneq ($(TW_CUSTOM_VERSION_STR),)
+    LOCAL_CFLAGS += -DTW_CUSTOM_VERSION_STR=\"$(TW_CUSTOM_VERSION_STR)\"
+endif
 
 LOCAL_ADDITIONAL_DEPENDENCIES := \
     dump_image \

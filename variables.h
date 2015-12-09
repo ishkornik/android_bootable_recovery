@@ -17,7 +17,11 @@
 #ifndef _VARIABLES_HEADER_
 #define _VARIABLES_HEADER_
 
-#define TW_VERSION_STR              "2.8.7.2-Rev.4"
+#ifdef TW_CUSTOM_VERSION_STR
+#define TW_VERSION_STR              TW_CUSTOM_VERSION_STR
+#else
+#define TW_VERSION_STR              "2.8.7.2"
+#endif
 #define TW_BUILT_STR                "andreya108@4pda/xda"
 
 #define TW_USE_COMPRESSION_VAR      "tw_use_compression"
