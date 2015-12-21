@@ -11,18 +11,18 @@
 		<resource name="fixed" type="fontoverride" filename="DroidSansMono.ttf" scale="100" />
 
 		<!-- Partition display names -->
-		<string name="system">System</string>
-		<string name="system_image">System Image</string>
+		<string name="system">Система</string>
+		<string name="system_image">Образ системы</string>
 		<string name="vendor">Vendor</string>
-		<string name="vendor_image">Vendor Image</string>
-		<string name="boot">Boot</string>
-		<string name="recovery">Recovery</string>
-		<string name="cache">Cache</string>
-		<string name="data">Data</string>
-		<string name="sdcard">SDCard</string>
-		<string name="internal">Internal Storage</string>
-		<string name="microsd">Micro SDCard</string>
-		<string name="usbotg">USB OTG</string>
+		<string name="vendor_image">Vendor образ</string>
+		<string name="boot">Ядро</string>
+		<string name="recovery">Рекавери</string>
+		<string name="cache">Кеш</string>
+		<string name="data">Дата</string>
+		<string name="sdcard">SD-карта</string>
+		<string name="internal">Внутренняя память</string>
+		<string name="microsd">Micro SD карта</string>
+		<string name="usbotg">OTG Диск</string>
 		<string name="android_secure">Android Secure</string>
 		<string name="dalvik">Dalvik / ART Cache</string>
 		<!-- This is a rarely used partition on a Micro SD card for a very old app2sd system -->
@@ -34,16 +34,16 @@
 		<string name="twrp_header">Team Win Recovery Project</string>
 		<string name="twrp_watch_header">TWRP %tw_version%</string>
 		<string name="cpu_temp">CPU: %tw_cpu_temp% &#xB0;C</string>
-		<string name="battery_pct">Battery: %tw_battery%</string>
+		<string name="battery_pct">Батарея: %tw_battery%</string>
 		<string name="sort_by_name">Sort by Name</string>
 		<string name="sort_by_date">Sort by Date</string>
 		<string name="sort_by_size">Sorty by Size</string>
-		<string name="sort_by_name_only">Name</string>
-		<string name="sort_by_date_only">Date</string>
-		<string name="sort_by_size_only">Size</string>
+		<string name="sort_by_name_only">Имя</string>
+		<string name="sort_by_date_only">Дата</string>
+		<string name="sort_by_size_only">Размер</string>
 		<string name="tab_general">GENERAL</string>
-		<string name="tab_options">OPTIONS</string>
-		<string name="tab_backup">BACKUP</string>
+		<string name="tab_options">ОПЦИИ</string>
+		<string name="tab_backup">БЕКАБ</string>
 		<string name="tab_time_zone">TIME ZONE</string>
 		<string name="tab_screen">SCREEN</string>
 		<string name="tab_vibration">VIBRATION</string>
